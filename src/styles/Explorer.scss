@@ -1,0 +1,26 @@
+.mdc-text-field.explorer-nav--cwd {
+  height: 36px;
+}
+
+.mdc-text-field__input {
+  font-size: 1rem;
+}
+
+.mdc-icon-button.explorer-nav--up {
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  margin-left: 0.35rem;
+  margin-right: 0.5rem;
+}
+
+.mdc-deprecated-list-item__text {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+}
+
+.mdc-deprecated-list-item__primary-text {
+  display: flex;
+}
