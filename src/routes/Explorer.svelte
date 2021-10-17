@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { ls, subdirSizes } from "@js/commands";
   import { formatSize } from "@js/utils";
+  import { explorer } from "@js/stores";
 
   /* SMUI */
   import Button, { Label } from "@smui/button/styled";
@@ -17,8 +18,9 @@
   import UpArrowIcon from "@mdi/svg/svg/arrow-up.svg?component";
 
   const listDir = async (path) => {
-    items = await ls(path);
-    console.table(items);
+    let dirItems = await ls(path);
+    console.table(dirItems);
+    return dirItems;
   };
 
   const subdirs = async (path) => {
@@ -36,13 +38,19 @@
 
   const iconSize = 18;
 
-  let path = ["sdcard"];
-  let items = [];
+  let state = $explorer;
+  let path = state.path || ["sdcard"];
+  let items = state.items;
 
   $: if (path) {
-    console.log(UpArrowIcon);
     let pathStr = path.join("/");
-    Promise.all([listDir(pathStr), subdirs(pathStr)]);
+    listDir(pathStr).then((dirItems) => {
+      items = dirItems;
+      explorer.set({
+        path,
+        items: dirItems,
+      });
+    });
   }
 
   onMount(async () => {});
@@ -59,17 +67,19 @@
       value={"//" + path.join("/")}
     />
   </div>
-  <List>
-    {#each items as item, i}
-      <FileSystemEntry
-        entry={item}
-        on:SMUI:action={() => handleItemClick(item)}
-      />
-      {#if i !== items.length - 1}
-        <Separator class="fs-entry-separator" />
-      {/if}
-    {/each}
-  </List>
+  {#if items}
+    <List>
+      {#each items as item, i}
+        <FileSystemEntry
+          entry={item}
+          on:SMUI:action={() => handleItemClick(item)}
+        />
+        {#if i !== items.length - 1}
+          <Separator class="fs-entry-separator" />
+        {/if}
+      {/each}
+    </List>
+  {/if}
 </div>
 
 <style>
