@@ -2,6 +2,14 @@
   import { getProps } from "@js/commands";
   import { onMount } from "svelte";
 
+  /* SMUI */
+  import Card, {
+    PrimaryAction,
+    Actions,
+    ActionButtons,
+    ActionIcons,
+  } from "@smui/card/styled";
+
   const deviceProps = () => {
     let device = {
       // 'Xiaomi'
@@ -45,7 +53,12 @@
 
   $: if (props) {
     device = deviceProps();
-    os = systemProps();
+    let sysProps = systemProps();
+    os = {
+      Android: sysProps.androidVersion,
+      Firmware: sysProps.firmwareVersion,
+      "Build date": sysProps.buildDate,
+    };
   }
 
   onMount(async () => {
@@ -56,21 +69,21 @@
 
 {#if device}
   <div class="device">
-    <div class="mdc-typography--headline4">Device</div>
-    <table>
-      {#each Object.entries(device) as [prop, value]}
-        <tr>
-          <td>{prop}</td>
-          <td>{value}</td>
-        </tr>
-      {/each}
-    </table>
+    <!-- <div class="mdc-typography--headline4">Device</div> -->
+    <div class="mdc-typography--headline4">
+      {device.manufacturer}
+      {device.name}
+    </div>
+    <div class="mdc-typography--body2">
+      {device.codename}
+      {device.model}
+    </div>
   </div>
 {/if}
 
 {#if os}
   <div class="os">
-    <div class="mdc-typography--headline4">OS</div>
+    <div class="mdc-typography--headline5">OS</div>
     <table>
       {#each Object.entries(os) as [prop, value]}
         <tr>
@@ -84,4 +97,7 @@
 
 <style lang="scss">
   @use "@material/typography/mdc-typography";
+
+  .device {
+  }
 </style>
