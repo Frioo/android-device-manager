@@ -1,3 +1,5 @@
+<svelte:options accessors />
+
 <script>
   import "typeface-roboto";
   import { onMount } from "svelte";
@@ -67,6 +69,8 @@
 </main>
 
 <style>
+  @import url("@styles/App.scss");
+
   :global(html, body) {
     margin: 0;
     padding: 0;
@@ -76,47 +80,5 @@
   main {
     width: 100vw;
     height: 100vh;
-  }
-
-  /* Drawer */
-  :global(.mdc-drawer) {
-    width: 100%;
-    flex-direction: row;
-  }
-
-  :global(.mdc-drawer__content) {
-    width: 20vw;
-    border-right: 1px solid rgba(0, 0, 0, 0.15);
-    box-sizing: border-box;
-  }
-
-  :global(.mdc-drawer-app-content) {
-    padding: 16px;
-    padding-bottom: 0;
-    width: 100%;
-    overflow-y: auto;
-  }
-
-  /* Drawer list */
-  :global(.mdc-deprecated-list) {
-    height: 100%;
-    box-sizing: border-box;
-    overflow-y: auto;
-  }
-
-  * :global(.smui-card__content) {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .row {
-    display: flex;
-    width: 100%;
-  }
-
-  * :global(.row *) {
-    margin-right: 0.65rem;
   }
 </style>
