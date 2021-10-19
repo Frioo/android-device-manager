@@ -8,3 +8,7 @@ export const formatSize = (bytes) => {
   }
   return `${Math.round(size * 100) / 100} ${units[i]}`;
 };
+
+export const arraysEqual = (arr1, arr2) => {
+  return JSON.stringify(arr1) === JSON.stringify(arr2);
+};
