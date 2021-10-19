@@ -4,4 +4,4 @@ const explorerDefault = {
   items: undefined,
   path: ["sdcard"],
 };
-export const explorer = writable(explorerDefault);
+export const explorer_cache = writable(explorerDefault);
