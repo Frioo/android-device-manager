@@ -14,7 +14,6 @@ const runOnDevice = async (script) => {
       "shell",
       `echo ${payload} | base64 -d | sh`,
     ]);
-    console.log(cmd);
     const output = await cmd.execute();
     if (!output || output.code != 0) {
       // Error occured
@@ -27,6 +26,13 @@ const runOnDevice = async (script) => {
   }
 };
 
+const waitForDevice = async (state) => {
+  console.log(`[commands] waiting for ${state}`);
+  const cmd = new Command("adb", [`wait-for-${state}`]);
+  const output = await cmd.execute();
+  return output;
+};
+
 export const subdirSizes = async (path) => {
   // Don't calculate disk usage of subdirs in root
   if (!path || path.length === 0) {
@@ -34,7 +40,6 @@ export const subdirSizes = async (path) => {
   }
   const script = `du -s -- ~/${path}/*/`;
   const output = await runOnDevice(script);
-  console.log(output.stdout);
   if (!output.stdout) {
     return {};
   }
@@ -77,7 +82,6 @@ export const ls = async (path) => {
       if (meta.length < 8) {
         return res;
       }
-      console.log(meta);
       const delim = " ";
       const [permissions, links, ownerName, ownerGroup, bytes] = meta.splice(
         0,
