@@ -16,18 +16,22 @@ export default defineConfig(({ command, mode }) => ({
   root: root,
   resolve: {
     alias: {
-      "@lib": path.join(root, "src/lib"),
-      "@js": path.join(root, "src/lib/js"),
-      "@routes": path.join(root, "src/routes"),
-      "@assets": path.join(root, "src/assets"),
-      "@styles": path.join(root, "src/styles"),
+      "@lib": path.resolve(root, "src", "lib"),
+      "@js": path.resolve(root, "src", "lib", "js"),
+      "@routes": path.resolve(root, "src", "routes"),
+      "@assets": path.resolve(root, "src", "assets"),
+      "@styles": path.resolve(root, "src", "styles"),
     },
+    extensions: [".mjs", ".js", ".ts", ".tsx", ".json", ".scss", ".css"],
   },
   plugins: [
     svelteSVG({
       svgoConfig: {}, // See https://github.com/svg/svgo#configuration
     }),
     svelte({
+      compilerOptions: {
+        accessors: true,
+      },
       preprocess: sveltePreprocess({
         sourceMap: mode === mode.dev,
       }),
@@ -36,7 +40,7 @@ export default defineConfig(({ command, mode }) => ({
   css: {
     preprocessorOptions: {
       scss: {
-        includePaths: ["src/theme/", "node_modules/"],
+        includePaths: ["src/theme", "node_modules", "src/styles"],
       },
     },
   },
