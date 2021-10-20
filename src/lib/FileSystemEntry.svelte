@@ -9,40 +9,52 @@
     SecondaryText,
     Graphic,
   } from "@smui/list/styled";
+  import { A, Span, Li } from "@smui/common/elements/index.js";
 
   /* Icons */
   import SymlinkIcon from "@mdi/svg/svg/share-outline.svg?component";
   import FolderIcon from "@mdi/svg/svg/folder-outline.svg?component";
   import FileIcon from "@mdi/svg/svg/file-outline.svg?component";
   import DownloadsFolderIcon from "@mdi/svg/svg/folder-download-outline.svg?component";
+  import { onMount } from "svelte";
 
   export let entry;
   let type;
   let icon;
+  let primaryText;
+  let secondaryText;
 
   $: if (entry) {
     type = entry.type;
+    primaryText = entry.name;
     if (type === "dir") {
       icon = FolderIcon;
+      secondaryText = `N items`;
     } else if (type === "file") {
       icon = FileIcon;
+      secondaryText = formatSize(entry.bytes);
     } else if (type === "link") {
       icon = SymlinkIcon;
+      secondaryText = entry.linksTo;
     }
   }
+
+  onMount(() => {});
 </script>
 
-<Item class="fs-entry" on:SMUI:action>
-  <Graphic class="fs-entry--icon">
-    <svelte:component this={icon} />
-  </Graphic>
-  <Text>
-    <PrimaryText>{entry.name}</PrimaryText>
-    <SecondaryText>
-      {formatSize(entry.bytes)}
-    </SecondaryText>
-  </Text>
-</Item>
+{#if entry}
+  <Item class="fs-entry" on:SMUI:action component={Li}>
+    <Graphic class="fs-entry--icon">
+      <svelte:component this={icon} />
+    </Graphic>
+    <Text>
+      <PrimaryText>{primaryText}</PrimaryText>
+      <SecondaryText>
+        {secondaryText}
+      </SecondaryText>
+    </Text>
+  </Item>
+{/if}
 
 <style lang="scss">
   /* File/Folder list items */
