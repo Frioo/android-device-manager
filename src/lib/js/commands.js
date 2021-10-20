@@ -26,7 +26,18 @@ const runOnDevice = async (script) => {
   }
 };
 
-const waitForDevice = async (state) => {
+export const devices = async () => {
+  const cmd = new Command("adb", "devices");
+  const output = await cmd.execute();
+  const states = ["device", "recovery", "fastboot", "bootloader"];
+  const devices = output.stdout.split("\n").slice(1, -1);
+
+  console.log(devices);
+
+  return devices;
+};
+
+export const waitForDevice = async (state) => {
   console.log(`[commands] waiting for ${state}`);
   const cmd = new Command("adb", [`wait-for-${state}`]);
   const output = await cmd.execute();
