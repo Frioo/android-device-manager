@@ -70,11 +70,11 @@
 {#if device}
   <div class="device">
     <!-- <div class="mdc-typography--headline4">Device</div> -->
-    <div class="mdc-typography--headline4">
+    <div class="device__name">
       {device.manufacturer}
       {device.name}
     </div>
-    <div class="mdc-typography--body2">
+    <div class="device__model">
       {device.codename}
       {device.model}
     </div>
@@ -82,22 +82,43 @@
 {/if}
 
 {#if os}
-  <div class="os">
-    <div class="mdc-typography--headline5">OS</div>
-    <table>
-      {#each Object.entries(os) as [prop, value]}
-        <tr>
-          <td>{prop}</td>
-          <td>{value}</td>
-        </tr>
-      {/each}
-    </table>
-  </div>
+  <Card variant="outlined">
+    <div class="os">
+      <div class="card__header">OS</div>
+      <table>
+        {#each Object.entries(os) as [prop, value]}
+          <tr>
+            <td>{prop}</td>
+            <td>{value}</td>
+          </tr>
+        {/each}
+      </table>
+    </div>
+  </Card>
 {/if}
 
 <style lang="scss">
-  @use "@material/typography/mdc-typography";
+  @use "@material/typography";
+  @import url("../styles/Home.scss");
 
   .device {
+    margin-bottom: 2rem;
+  }
+
+  .device__name {
+    @include typography.typography("headline4");
+  }
+
+  .device__model {
+    @include typography.typography("subtitle2");
+    opacity: 0.65;
+    text-transform: uppercase;
+    font-family: "consolas";
+  }
+
+  .os {
+    padding: 0.35rem 0.5rem;
+    display: flex;
+    flex-direction: column;
   }
 </style>
