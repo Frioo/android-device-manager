@@ -5,8 +5,9 @@
   import { onMount } from "svelte";
 
   /* Routing */
-  import Router, { push, pop, replace } from "svelte-spa-router";
+  import Router, { push, pop, replace, link } from "svelte-spa-router";
   import wrap from "svelte-spa-router/wrap";
+  import active from "svelte-spa-router/active";
   import Home from "@routes/Home.svelte";
   import Explorer from "@routes/Explorer.svelte";
   import Apps from "@routes/Apps.svelte";
@@ -59,7 +60,6 @@
     { href: "/", text: "Home", icon: "" },
     { href: "/explorer", text: "Files", icon: "" },
     { href: "/apps", text: "Apps", icon: "" },
-    { href: "", text: "", icon: "" },
   ];
 
   /* const handleProps = async () => {
@@ -77,9 +77,19 @@
     <DrawerContent>
       <List>
         {#each items as { href, text, icon }}
-          <Item on:click={() => push(href)}>
-            <Text>{text}</Text>
-          </Item>
+          <a
+            class="route-item"
+            {href}
+            use:link
+            use:active={{
+              path: href,
+              className: "mdc-deprecated-list-item--activated",
+            }}
+          >
+            <Item>
+              <Text>{text}</Text>
+            </Item>
+          </a>
         {/each}
       </List>
     </DrawerContent>
@@ -99,7 +109,7 @@
   </Drawer>
 </main>
 
-<style>
+<style lang="scss">
   @import url("@styles/App.scss");
 
   :global(html, body) {
@@ -111,6 +121,11 @@
   main {
     width: 100vw;
     height: 100vh;
+  }
+
+  .route-item {
+    text-decoration: none;
+    color: unset;
   }
 
   .loading {
