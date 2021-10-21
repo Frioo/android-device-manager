@@ -1,6 +1,7 @@
 <script>
   import { getProps } from "@js/commands";
   import { onMount } from "svelte";
+  import { format } from "date-fns";
 
   /* SMUI */
   import Card, {
@@ -21,17 +22,28 @@
       // 'gauguin_eea'
       variantCodename: props["ro.product.odm.name"],
       model: props["ro.product.odm.model"],
+
+      abiList: props["ro.vendor.product.cpu.abilist"],
     };
 
     return device;
   };
 
   const systemProps = () => {
+    let buildDateUtc = parseInt(props["ro.product.build.date.utc"]);
+    let buildDate = new Date(buildDateUtc * 1000);
     let os = {
       // Android
       androidVersion: props["ro.product.build.version.release"],
       firstApiLevel: props["ro.product.first_api_level"],
       apiLevel: props["ro.product.build.version.sdk"],
+
+      // Security
+      securityPatch: props["ro.build.version.security_patch"],
+      encryptionState: props["ro.crypto.state"],
+      encryptionMode: props["ro.crypto.volume.filenames_mode"],
+      selinux: props["ro.boot.selinux"],
+      verity: props["ro.boot.veritymode"],
 
       // Firmware
       firmwareVersion: props["ro.odm.build.version.incremental"],
@@ -39,7 +51,7 @@
       firmwareFingerprint: props["ro.odm.build.fingerprint"],
 
       // ROM
-      buildDate: props["ro.product.build.date"],
+      buildDate: format(buildDate, "yyyy-MM-dd"),
       buildId: props["ro.product.build.id"],
       buildFingerprint: props["ro.product.build.fingerprint"],
     };
@@ -56,8 +68,16 @@
     let sysProps = systemProps();
     os = {
       Android: sysProps.androidVersion,
+      "Security patch": sysProps.securityPatch,
       Firmware: sysProps.firmwareVersion,
+      "Build ID": sysProps.buildId,
       "Build date": sysProps.buildDate,
+      Encryption:
+        sysProps.encryptionState === "encrypted"
+          ? sysProps.encryptionMode
+          : "disabled",
+      SELinux: sysProps.selinux,
+      Verity: sysProps.verity,
     };
   }
 
@@ -84,12 +104,13 @@
 {#if os}
   <Card variant="outlined">
     <div class="os">
-      <div class="card__header">OS</div>
+      <div class="card__header">System</div>
       <table>
         {#each Object.entries(os) as [prop, value]}
           <tr>
-            <td>{prop}</td>
-            <td>{value}</td>
+            <td class="td--prop">{prop}</td>
+            <td style="width: 0.5rem" />
+            <td class="td--value">{value}</td>
           </tr>
         {/each}
       </table>
@@ -114,6 +135,23 @@
     opacity: 0.65;
     text-transform: uppercase;
     font-family: "consolas";
+  }
+
+  .card__header {
+    @include typography.typography("headline6");
+    color: var(--mdc-theme-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  table {
+    .td--prop {
+      text-align: start;
+      font-weight: 500;
+    }
+
+    .td--value {
+      text-align: end;
+    }
   }
 
   .os {
