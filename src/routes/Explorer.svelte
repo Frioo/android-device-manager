@@ -59,6 +59,11 @@
       path = state.path;
       items = state.items;
     }
+
+    // Without this, there's a weird bug where after changing directories,
+    // the item at the index of the clicked directory would render focused
+    // --mdc-ripple-upgraded--background-focused
+    // activeElement.blur() removes focus from the focused element.
     if (document) {
       document.activeElement.blur();
     }
