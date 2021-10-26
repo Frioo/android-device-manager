@@ -1,0 +1,17 @@
+.mdc-drawer .mdc-deprecated-list-item.app {
+  margin: 0;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  margin-bottom: 0.35rem;
+}
+
+.mdc-deprecated-list-item__text {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+}
+
+.mdc-deprecated-list-item__primary-text {
+  display: flex;
+}
