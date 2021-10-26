@@ -17,10 +17,8 @@ const runOnDevice = async (script) => {
       `echo ${payload} | base64 -d | sh`,
     ]);
     const output = await cmd.execute();
-    if (!output || output.code != 0) {
     if (!output || output.code != 0 || !output.stdout || output.stderr) {
       // Error occured
-      console.error("[commands] command error", output.stderr);
       console.error("[commands] command error", output.stdout, output.stderr);
     }
     return output;
@@ -145,36 +143,6 @@ export const ls = async (path) => {
   return items;
 };
 
-export const getInstalledPackages = async (opt) => {
-  const opts = {
-    all: "-a",
-    system: "-s",
-    user: "-3",
-  };
-  const flags = {
-    includeApk: "-f",
-  };
-  const script = `
-cmd package list packages ${opts[opt]} ${Object.values(flags).join(" ")}
-`;
-  const output = await runOnDevice(script);
-  const packages = output.stdout.split("\n").reduce((res, line) => {
-    let [left, right] = line.split("=");
-    if (!left || !right) return res;
-
-    let pkgName = right;
-    let pkgApk = left.split("package:")[1];
-    res.push({
-      name: pkgName,
-      apk: pkgApk,
-    });
-    return res;
-  }, []);
-
-  console.table(packages);
-  return packages;
-};
-
 export const getProps = async () => {
   const script = `getprop`;
   const output = await runOnDevice(script);
@@ -189,7 +157,6 @@ export const getProps = async () => {
     }
     return res;
   }, {});
-  console.log(props);
   //console.log(props);
   return props;
 };
@@ -200,6 +167,18 @@ export const dumpBattery = async () => {
   return output.stdout;
 };
 
+/* 
+  Returns an object with diskstats from dumpsys
+  {
+    <...other keys>
+    apps: {
+      "com.app.package": {
+        size: <int>
+        dataSize: <int>
+      }
+    }
+  }
+*/
 export const packageDiskStats = async () => {
   const script = `dumpsys diskstats`;
   const output = await runOnDevice(script);
@@ -216,13 +195,18 @@ export const packageDiskStats = async () => {
   let apps = stats["Package Names"]
     .slice(1, -1)
     .split(",")
-    .map((pkg, i) => ({
-      package: pkg.slice(1, -1),
-      size: parseInt(appSizes[i]),
-      dataSize: parseInt(appDataSizes[i]),
-    }));
-  console.log(stats);
-  console.table(apps);
+    .reduce((res, pkg, i) => {
+      let pkgName = pkg.slice(1, -1);
+      let size = parseInt(appSizes[i]);
+      let dataSize = parseInt(appDataSizes[i]);
+      res[pkgName] = {
+        size,
+        dataSize,
+      };
+      return res;
+    }, {});
+  //console.log(stats);
+  //console.table(apps);
   return {
     ...stats,
     apps,
