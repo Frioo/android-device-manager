@@ -14,6 +14,8 @@
   let apps;
   let ubApps = apps_cache.subscribe((val) => (apps = val));
   let includeSystemApps = false;
+  let statusText = "";
+  let statusProgress;
   let items;
   let filters = {
     installedBy: {
@@ -37,6 +39,8 @@
   };
 
   const onApp = (e) => {
+    statusProgress = Math.round((e.current / e.total) * 100) / 100;
+    console.log(statusProgress);
     statusText = `${e.current}/${e.total}`;
   };
 
@@ -52,6 +56,9 @@
   }; */
 </script>
 
+<div class="apps-loader">
+  <LinearProgress progress={statusProgress} close={statusProgress >= 1} />
+</div>
 <div class="apps">
   <!-- Filters -->
   <div class="apps-filters">
@@ -89,5 +96,10 @@
     width: 100%;
   }
 
+  .apps-loader {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    left: 0;
   }
 </style>
