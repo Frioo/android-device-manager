@@ -8,6 +8,7 @@
   /* SMUI */
   import List, { Item, Text, PrimaryText, SecondaryText } from "@smui/list";
   import Button, { Group, Label } from "@smui/button";
+  import LinearProgress from "@smui/linear-progress/styled";
   import AppItem from "@lib/AppItem.svelte";
 
   let stats;
