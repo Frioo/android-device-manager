@@ -1,15 +1,23 @@
 <script>
   import { onMount } from "svelte";
   import { formatSize } from "@js/utils";
-  import { packageDiskStats } from "@js/commands";
+  import { packages, packageDiskStats, systemApps } from "@js/commands";
+  import { listApps } from "@js/pm";
+  import { apps_cache } from "@js/stores";
 
   /* SMUI */
   import List, { Item, Text, PrimaryText, SecondaryText } from "@smui/list";
 
   let stats;
+  let apps;
+  let ubApps = apps_cache.subscribe((val) => (apps = val));
+  let includeSystemApps = false;
 
   onMount(async () => {
-    stats = await packageDiskStats();
+    //stats = await packageDiskStats();
+    //await packages();
+    //await systemApps();
+    await listApps({ installedBy: "all", onApp });
   });
 </script>
 
