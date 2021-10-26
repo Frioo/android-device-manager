@@ -12,3 +12,14 @@ export const formatSize = (bytes) => {
 export const arraysEqual = (arr1, arr2) => {
   return JSON.stringify(arr1) === JSON.stringify(arr2);
 };
+
+export function log(text, tag = undefined, ...rest) {
+  let tagStr = tag ? `[${tag}] ` : "";
+  let caller = arguments.callee.caller.name;
+  let str = `[${caller}] ${text}`;
+  console.log(str, ...rest);
+}
+
+export const splitAt = (str, index) => {
+  return [str.substring(0, index), str.substring(index + 1)];
+};
