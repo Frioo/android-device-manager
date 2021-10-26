@@ -67,8 +67,6 @@
     if (document) {
       document.activeElement.blur();
     }
-
-    //unfocusItems();
   }
 
   onMount(async () => {
