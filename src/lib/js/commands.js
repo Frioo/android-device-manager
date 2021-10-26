@@ -1,5 +1,7 @@
 import { Command } from "@tauri-apps/api/shell";
 import { Buffer } from "buffer";
+import parser from "./badging_parser";
+import { log, splitAt } from "@js/utils";
 
 /* 
   Accepts a (sh) script in string format.
@@ -16,8 +18,10 @@ const runOnDevice = async (script) => {
     ]);
     const output = await cmd.execute();
     if (!output || output.code != 0) {
+    if (!output || output.code != 0 || !output.stdout || output.stderr) {
       // Error occured
       console.error("[commands] command error", output.stderr);
+      console.error("[commands] command error", output.stdout, output.stderr);
     }
     return output;
   } catch (err) {
@@ -131,6 +135,7 @@ export const ls = async (path) => {
         bytes,
         lastModified,
         name,
+        fullPath: `${path}/${name}`,
         ...typeInfo,
       });
       return res;
@@ -185,6 +190,7 @@ export const getProps = async () => {
     return res;
   }, {});
   console.log(props);
+  //console.log(props);
   return props;
 };
 
@@ -222,3 +228,101 @@ export const packageDiskStats = async () => {
     apps,
   };
 };
+
+/* non-root */
+export const systemApps = async () => {
+  const systemAppEntries = await ls("system/app");
+  if (!systemAppEntries) {
+    return;
+  }
+  const apps = systemAppEntries.map(async (appDir) => {
+    let apkPath = `${appDir.fullPath}/${appDir.name}.apk`;
+    let manifest = await apkManifest(apkPath);
+    return {};
+  });
+};
+
+const excludePaths = ["apex"];
+const joinAbsPath = (pathArr) => `/${pathArr.join("/")}/`;
+
+export const packages = async ({
+  root = false,
+  installedBy = "user",
+  callback = undefined,
+}) => {
+  const opts = {
+    all: "-a",
+    system: "-s",
+    user: "-3",
+  };
+  const flags = {
+    includeApk: "-f",
+  };
+  const script = `cmd package list packages ${
+    opts[installedBy]
+  } ${Object.values(flags).join(" ")}`;
+  const output = await runOnDevice(script);
+
+  // DiskStats needed for app / app data size info
+  let diskStats = await packageDiskStats();
+  // Parse output
+  // example: 'package:/data/app/org.example.app/org.example.app.apk=org.example.app
+  let packages = [];
+  let items = output.stdout.split("\n");
+  for (let i = 0; i < items.length; i++) {
+    const line = items[i];
+    let [left, right] = splitAt(line, line.lastIndexOf("="));
+    if (!left || !right) continue;
+
+    let pkg = right;
+    let apkPath = left.split("package:")[1];
+    let manifest = root ? await apkManifest(apkPath) : undefined;
+
+    const res = {
+      pkg,
+      apk: apkPath,
+      installedBy: apkPath.startsWith("/data/app/") ? "user" : "system",
+      ...diskStats.apps[pkg],
+      manifest,
+    };
+
+    // If callback is passed, it is called with each processed app
+    if (callback) {
+      callback({
+        current: i + 1,
+        total: items.length,
+        app: res,
+      });
+    }
+    packages.push(res);
+  }
+
+  console.table(packages);
+  return packages;
+};
+
+// TODO: detect required utils and autoinstall busybox or sth
+/* Dumps manifest info as json from apk (aapt2) */
+const apkManifest = async (apkPath) => {
+  if (!apkPath) {
+    console.log("apk path is unspecified");
+    return undefined;
+  } else if (excludePaths.some((path) => apkPath.startsWith(`/${path}/`))) {
+    // The apk is in an excluded directory, exit
+    console.log("skipping apk: excluded directory", apkPath);
+    return undefined;
+  }
+
+  const script = `su -c "~/data/adm/aapt2 dump badging ${apkPath}"`;
+  const output = await runOnDevice(script);
+  try {
+    const manifest = parser.parse(output.stdout);
+    console.log("apk manifest parsed", apkPath, manifest);
+    return manifest;
+  } catch (err) {
+    console.log("error parsing apk manifest", apkPath, err);
+    return undefined;
+  }
+};
+
+const dumpApp = async () => {};
