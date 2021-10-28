@@ -1,31 +1,31 @@
 # Android Device Manager
 
-> Cross-platform GUI for managing your Android device.
+Cross-platform GUI for managing your Android device.
 
-## Features & Future
+## Features & Future 
 
-> 🟢    =	shipped
-> 🧰    =	work in progress
->  📍     =	in the queue
+> 🟢    =	shipped 
+> 🧰    =	work in progress 
+>  📍     =	in the queue 
 
-**Device manager**
-	🟢 System info
-	 📍  Magisk info
-	 📍  Advanced reboot
-	 📍  Backups
+**Device manager** 
+	🟢 System info 
+	 📍  Magisk info 
+	 📍  Advanced reboot 
+	 📍  Backups 
 
-**File explorer**
-	🟢 Browse internal storage
-	🧰 Copy/Cut/Paste
-	🧰 Create files/directories
-	 📍  Drag/Drop items
+**File explorer **
+	🟢 Browse internal storage 
+	🧰 Copy/Cut/Paste 
+	🧰 Create files/directories 
+	 📍  Drag/Drop items 
 
-**App manager**
-	🟢 List all/user/system apps
-	🟢 App labels, sizes and storage usage
- 	📍  Manage permissions
-	 📍  Sideload/Disable/Uninstall apps
-	 📍  App backups
+**App manager** 
+	🟢 List all/user/system apps 
+	🟢 App labels, sizes and storage usage 
+ 	📍  Manage permissions 
+	 📍  Sideload/Disable/Uninstall apps 
+	 📍  App backups 
 
 
 
