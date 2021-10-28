@@ -9,7 +9,8 @@ Cross-platform GUI for managing your Android device.
 >  📍     =	in the queue 
 
 **Device manager** 
-	🟢 System info
+
+​	🟢 System info
 
 ​	 📍  Magisk info 
 
@@ -18,17 +19,26 @@ Cross-platform GUI for managing your Android device.
 ​	 📍  Backups 
 
 **File explorer**
-	🟢 Browse internal storage 
-	🧰 Copy/Cut/Paste 
-	🧰 Create files/directories 
-	 📍  Drag/Drop items 
+
+​	🟢 Browse internal storage 
+
+​	🧰 Copy/Cut/Paste 
+
+​	🧰 Create files/directories 
+
+​	 📍  Drag/Drop items 
 
 **App manager** 
-	🟢 List all/user/system apps 
-	🟢 App labels, sizes and storage usage 
- 	📍  Manage permissions 
-	 📍  Sideload/Disable/Uninstall apps 
-	 📍  App backups 
+
+🟢 List all/user/system apps 
+
+🟢 App labels, sizes and storage usage 
+
+ 📍  Manage permissions 
+
+ 📍  Sideload/Disable/Uninstall apps 
+
+ 📍  App backups 
 
 
 
