@@ -9,12 +9,15 @@ Cross-platform GUI for managing your Android device.
 >  📍     =	in the queue 
 
 **Device manager** 
-	🟢 System info 
-	 📍  Magisk info 
-	 📍  Advanced reboot 
-	 📍  Backups 
+	🟢 System info
 
-**File explorer **
+​	 📍  Magisk info 
+
+​	 📍  Advanced reboot 
+
+​	 📍  Backups 
+
+**File explorer**
 	🟢 Browse internal storage 
 	🧰 Copy/Cut/Paste 
 	🧰 Create files/directories 
