@@ -24,8 +24,9 @@
   import Button, { Label } from "@smui/button/styled";
   import Card, { Content } from "@smui/card/styled";
   import CircularProgress from "@smui/circular-progress/styled";
+  import { getProps } from "./lib/js/commands";
 
-  let isLoading = false;
+  let isLoading = true;
 
   const deviceGuard = (component) => {
     return wrap({
@@ -61,15 +62,6 @@
     { href: "/explorer", text: "Files", icon: "" },
     { href: "/apps", text: "Apps", icon: "" },
   ];
-
-  /* const handleProps = async () => {
-    let props = await getProps();
-    items = Object.entries(props).map((e) => ({
-      prop: e[0],
-      value: e[1],
-    }));
-    console.log(items);
-  }; */
 </script>
 
 <main>
