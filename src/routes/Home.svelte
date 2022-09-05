@@ -91,12 +91,12 @@
   <div class="device">
     <!-- <div class="mdc-typography--headline4">Device</div> -->
     <div class="device__name">
-      {device.manufacturer}
-      {device.name}
+      {device.manufacturer || ""}
+      {device.name || ""}
     </div>
     <div class="device__model">
-      {device.codename}
-      {device.model}
+      {device.codename || ""}
+      {device.model || ""}
     </div>
   </div>
 {/if}
