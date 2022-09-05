@@ -122,9 +122,11 @@ export const ls = async (path) => {
         break;
 
       case "d":
+        const itemCount = await countDir(`${path}/${name}`);
         typeInfo = {
           type: "dir",
           name: name.slice(0, -1), // Strip the trailing slash
+          itemCount,
         };
         break;
       case "l":
