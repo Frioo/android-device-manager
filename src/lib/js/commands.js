@@ -111,6 +111,8 @@ export const ls = async (path) => {
     const lastModified = meta.splice(0, 2).join(delim);
     const nameText = meta.join(delim);
     let [name, linkTo] = nameText.split(" -> ");
+    // Strip trailing newline
+    name = name.slice(0, -1);
     let typeInfo = {};
     switch (permissions[0]) {
       case "-":
