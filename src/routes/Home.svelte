@@ -1,7 +1,8 @@
 <script>
-  import { getProps } from "@js/commands";
   import { onMount } from "svelte";
   import { format } from "date-fns";
+  import { getProps, packageDiskStats } from "@js/commands";
+  import { formatSize } from "@js/utils";
 
   /* SMUI */
   import Card, {
@@ -60,8 +61,10 @@
   };
 
   let props;
+  let diskStats;
   let device;
   let os;
+  let storage;
 
   $: if (props) {
     device = deviceProps();
@@ -81,9 +84,34 @@
     };
   }
 
+  $: if (diskStats) {
+    let capacity = Number.parseInt(diskStats["System Size"]);
+    let [dataFree, dataTotal] =
+      diskStats["Data-Free"].match(/(\d+)(?! \/ )(\d+)/g);
+    const data = {
+      free: dataFree * 1000,
+      total: dataTotal * 1000,
+    };
+    const photos = Number.parseInt(diskStats["Photos Size"]);
+    const videos = Number.parseInt(diskStats["Videos Size"]);
+    const apps = Number.parseInt(diskStats["App Size"]);
+    const encryption =
+      diskStats["File-based Encryption"] === "true\r" ? true : false;
+    storage = {
+      capacity,
+      data,
+      photos,
+      videos,
+      apps,
+      encryption,
+    };
+  }
+
   onMount(async () => {
     props = await getProps();
-    console.log(props);
+    //console.log(props);
+    diskStats = await packageDiskStats();
+    //console.log(diskStats);
   });
 </script>
 
@@ -101,26 +129,80 @@
   </div>
 {/if}
 
-{#if os}
-  <Card variant="outlined">
-    <div class="os">
-      <div class="card__header">System</div>
-      <table>
-        {#each Object.entries(os) as [prop, value]}
+<div class="home-cards">
+  {#if os}
+    <Card variant="outlined">
+      <div class="card os">
+        <div class="card__header">System</div>
+        <table>
+          {#each Object.entries(os) as [prop, value]}
+            <tr>
+              <td class="td--prop">{prop}</td>
+              <td style="width: 0.5rem" />
+              <td class="td--value">{value}</td>
+            </tr>
+          {/each}
+        </table>
+      </div>
+    </Card>
+  {/if}
+
+  {#if storage}
+    <Card variant="outlined">
+      <div class="card storage">
+        <div class="card__header">Storage</div>
+        <table>
           <tr>
-            <td class="td--prop">{prop}</td>
-            <td style="width: 0.5rem" />
-            <td class="td--value">{value}</td>
+            <td class="td--prop">Capacity</td>
+            <td style="width: 0.5em" />
+            <td class="td--value">{formatSize(storage.capacity)}</td>
           </tr>
-        {/each}
-      </table>
-    </div>
-  </Card>
-{/if}
+          <tr>
+            <td class="td--prop">Internal storage</td>
+            <td style="width: 0.5em" />
+            <td class="td--value"
+              >{`${formatSize(storage.data.free)} / ${formatSize(
+                storage.data.total
+              )}`}</td
+            >
+          </tr>
+          <tr>
+            <td class="td--prop">Apps</td>
+            <td style="width: 0.5em" />
+            <td class="td--value">{formatSize(storage.apps)}</td>
+          </tr>
+          <tr>
+            <td class="td--prop">Photos</td>
+            <td style="width: 0.5em" />
+            <td class="td--value">{formatSize(storage.photos)}</td>
+          </tr>
+          <tr>
+            <td class="td--prop">Videos</td>
+            <td style="width: 0.5em" />
+            <td class="td--value">{formatSize(storage.videos)}</td>
+          </tr>
+          <tr>
+            <td class="td--prop">Encryption</td>
+            <td style="width: 0.5em" />
+            <td class="td--value"
+              >{storage.encryption ? "Enabled" : "Disabled"}</td
+            >
+          </tr>
+        </table>
+      </div>
+    </Card>
+  {/if}
+</div>
 
 <style lang="scss">
   @use "@material/typography";
   @import url("../styles/Home.scss");
+
+  .home-cards {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 1.5rem;
+  }
 
   .device {
     margin-bottom: 2rem;
@@ -154,8 +236,8 @@
     }
   }
 
-  .os {
-    padding: 0.35rem 0.5rem;
+  .card {
+    padding: 0.35rem 0.75rem;
     display: flex;
     flex-direction: column;
   }
