@@ -29,7 +29,9 @@
     primaryText = entry.name;
     if (type === "dir") {
       icon = FolderIcon;
-      secondaryText = `N items`;
+      secondaryText = `${entry.itemCount} ${
+        entry.itemCount === 1 ? "item" : "items"
+      }`;
     } else if (type === "file") {
       icon = FileIcon;
       secondaryText = formatSize(entry.bytes);
