@@ -88,66 +88,66 @@ export const ls = async (path) => {
     -t
     -r
     -p: adds trailing slash on directories
+    -q: print ? instead of non-graphic chars
 
     ONLY CALCULATES SUBDIR SIZES IN SDCARD
   */
-  const script = `ls -Hlp ~/${path}`;
+  const script = `ls -Hlpq ~/${path}`;
   const output = await runOnDevice(script);
 
-  let items = output.stdout
-    .split("\n")
-    .slice(1)
-    .reduce((res, line) => {
-      let meta = line.split(/[ ]+/);
-      if (meta.length < 8) {
-        return res;
-      }
-      const delim = " ";
-      const [permissions, links, ownerName, ownerGroup, bytes] = meta.splice(
-        0,
-        5
-      );
-      const lastModified = meta.splice(0, 2).join(delim);
-      const nameText = meta.join(delim);
-      const [name, linkTo] = nameText.split(" -> ");
-      let typeInfo = {};
-      switch (permissions[0]) {
-        case "-":
-          typeInfo = {
-            type: "file",
-          };
-          break;
+  let lines = output.stdout.split("\n").slice(1);
 
-        case "d":
-          typeInfo = {
-            type: "dir",
-            name: name.slice(0, -1), // Strip the trailing slash
-          };
-          break;
-        case "l":
-          typeInfo = {
-            type: "link",
-            linksTo: linkTo,
-          };
-          break;
-      }
+  let res = [];
+  for (const line of lines) {
+    let meta = line.split(/[ ]+/);
+    if (meta.length < 8) {
+      continue;
+    }
+    const delim = " ";
+    const [permissions, links, ownerName, ownerGroup, bytes] = meta.splice(
+      0,
+      5
+    );
+    const lastModified = meta.splice(0, 2).join(delim);
+    const nameText = meta.join(delim);
+    let [name, linkTo] = nameText.split(" -> ");
+    let typeInfo = {};
+    switch (permissions[0]) {
+      case "-":
+        typeInfo = {
+          type: "file",
+        };
+        break;
 
-      res.push({
-        permissions,
-        links,
-        ownerName,
-        ownerGroup,
-        bytes,
-        lastModified,
-        name,
-        fullPath: `${path}/${name}`,
-        ...typeInfo,
-      });
-      return res;
-    }, []);
+      case "d":
+        typeInfo = {
+          type: "dir",
+          name: name.slice(0, -1), // Strip the trailing slash
+        };
+        break;
+      case "l":
+        typeInfo = {
+          type: "link",
+          linksTo: linkTo,
+        };
+        break;
+    }
+
+    res.push({
+      permissions,
+      links,
+      ownerName,
+      ownerGroup,
+      bytes,
+      lastModified,
+      name,
+      fullPath: `${path}/${name}`,
+      ...typeInfo,
+    });
+  }
 
   //console.table(items);
-  return items;
+  return res;
 };
 
 export const getProps = async () => {
