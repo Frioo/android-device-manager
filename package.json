@@ -30,7 +30,7 @@
     "svelte": "^3.50.0",
     "svelte-preprocess": "^4.10.7",
     "vite": "^2.9.15",
-    "vite-plugin-svelte-svg": "^1.0.0"
+    "vite-plugin-svelte-svg": "2.0.2"
   },
   "dependencies": {
     "@material/feature-targeting": "^14.0.0",
