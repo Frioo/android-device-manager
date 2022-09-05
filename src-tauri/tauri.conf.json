@@ -29,13 +29,11 @@
       "shortDescription": "",
       "longDescription": "",
       "deb": {
-        "depends": [],
-        "useBootstrapper": false
+        "depends": []
       },
       "macOS": {
         "frameworks": [],
         "minimumSystemVersion": "",
-        "useBootstrapper": false,
         "exceptionDomain": "",
         "signingIdentity": null,
         "entitlements": null
@@ -50,7 +48,18 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "all": true,
+      "shell": {
+        "open": true,
+        "execute": true,
+        "scope": [
+          {
+            "name": "adb",
+            "cmd": "adb",
+            "args": true
+          }
+        ]
+      }
     },
     "windows": [
       {
