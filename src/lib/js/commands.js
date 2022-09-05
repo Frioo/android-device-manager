@@ -73,6 +73,13 @@ export const subdirSizes = async (path) => {
   return subdirs;
 };
 
+export const countDir = async (path) => {
+  const script = `ls -Hlpq ~/${path} | wc -l`;
+  const output = await runOnDevice(script);
+  const res = Number.parseInt(output.stdout);
+  return res <= 0 ? 0 : res - 1;
+};
+
 export const ls = async (path) => {
   /* 
     List files/directories with their metadata
