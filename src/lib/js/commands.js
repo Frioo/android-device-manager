@@ -1,5 +1,6 @@
 import { Command } from "@tauri-apps/api/shell";
 import { Buffer } from "buffer";
+import { Buffer } from "buffer/";
 import parser from "./badging_parser";
 import { log, splitAt } from "@js/utils";
 
